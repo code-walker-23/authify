@@ -2,6 +2,7 @@ package com.vinay.authify.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -14,6 +15,8 @@ import java.sql.Timestamp;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +25,7 @@ public class UserEntity {
     @Column(unique = true)
     private String userId;
     @Column(unique = true)
-    private String Email;
+    private String email;
     private String password;
     private String verifyOtp;
     private boolean isAccountVerified;
