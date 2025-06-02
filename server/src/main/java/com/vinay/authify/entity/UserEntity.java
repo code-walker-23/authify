@@ -20,6 +20,8 @@ public class UserEntity {
     private Long id;
     private String name;
     @Column(unique = true)
+    private String userId;
+    @Column(unique = true)
     private String Email;
     private String password;
     private String verifyOtp;
@@ -27,6 +29,7 @@ public class UserEntity {
     private Long verifyOtpExpiredAt;
     private Long resetOtpExpiredAt;
     private String resetOtp;
+
     @CreationTimestamp
     @Column(updatable = false)
     private Timestamp createdAt;
