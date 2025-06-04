@@ -8,7 +8,10 @@ import com.vinay.authify.mapper.UserMapper;
 import com.vinay.authify.repository.UserRepository;
 import com.vinay.authify.service.ProfileService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,12 @@ public class ProfileServiceImpl implements ProfileService {
     @Override
     public ProfileResponse createProfile(ProfileRequest request) {
         UserEntity user = userMapper.toEntity(request);
-        user = userRepository.save(user);
-        return userMapper.toResponse(user);
+        if(!userRepository.existsByEmail(request.getEmail())){
+            user = userRepository.save(user);
+            return userMapper.toResponse(user);
+        }
+
+        throw new ResponseStatusException(HttpStatus.CONFLICT,"Email already exists");
+
     }
 }
