@@ -3,6 +3,7 @@ package com.vinay.authify.controller;
 import com.vinay.authify.dto.AuthRequest;
 import com.vinay.authify.dto.AuthResponse;
 import com.vinay.authify.dto.ResetPasswordRequest;
+import com.vinay.authify.dto.VerifyOtpRequest;
 import com.vinay.authify.service.AppUserDetailsService;
 import com.vinay.authify.service.ProfileService;
 import com.vinay.authify.util.JwtUtil;
@@ -87,6 +88,28 @@ public class AuthController {
     public void resetPassword(@Valid @RequestBody ResetPasswordRequest req){
         try{
             profileService.resetPassword(req.getEmail(), req.getOtp(), req.getNewPassword());
+        }catch(Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.getMessage());
+        }
+    }
+
+    @PostMapping("/send-otp")
+    public void sendOtp(@CurrentSecurityContext(expression = "authentication?.name") String email){
+        try{
+            profileService.sendOtp(email);
+        }catch(Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.getMessage());
+        }
+    }
+
+    @PostMapping("/verify-otp")
+    public void verifyOtp(@Valid @RequestBody VerifyOtpRequest req, @CurrentSecurityContext(expression = "authentication?.name") String email){
+
+        if (req.getOtp() == null || !req.getOtp().matches("\\d{6}")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid OTP format. OTP must be a 6-digit number.");
+        }
+        try{
+            profileService.verifyOtp(email,req.getOtp());
         }catch(Exception ex){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.getMessage());
         }
