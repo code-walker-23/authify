@@ -2,10 +2,13 @@ package com.vinay.authify.controller;
 
 import com.vinay.authify.dto.AuthRequest;
 import com.vinay.authify.dto.AuthResponse;
+import com.vinay.authify.dto.ResetPasswordRequest;
 import com.vinay.authify.service.AppUserDetailsService;
 import com.vinay.authify.service.ProfileService;
 import com.vinay.authify.util.JwtUtil;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
@@ -75,6 +78,15 @@ public class AuthController {
     public void sendResetOtp(@RequestParam String email){
         try{
             profileService.sendResetOtp(email);
+        }catch(Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPassword(@Valid @RequestBody ResetPasswordRequest req){
+        try{
+            profileService.resetPassword(req.getEmail(), req.getOtp(), req.getNewPassword());
         }catch(Exception ex){
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,ex.getMessage());
         }
