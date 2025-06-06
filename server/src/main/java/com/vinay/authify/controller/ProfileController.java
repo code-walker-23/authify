@@ -2,6 +2,7 @@ package com.vinay.authify.controller;
 
 import com.vinay.authify.dto.ProfileRequest;
 import com.vinay.authify.dto.ProfileResponse;
+import com.vinay.authify.service.EmailService;
 import com.vinay.authify.service.ProfileService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,12 +16,13 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
 
     private final ProfileService profileService;
+    private final EmailService emailService;
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public ProfileResponse register(@Valid @RequestBody ProfileRequest request){
         ProfileResponse response = profileService.createProfile(request);
-        // TODO: Trigger an email with welcome
+        emailService.sendWelcomeEmail(request.getEmail(),request.getName());
         return response;
     }
 
