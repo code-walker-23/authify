@@ -43,4 +43,25 @@ public class EmailService {
         message.setText(body);
         javaMailSender.send(message);
     }
+
+    public void sendOtpEmail(String toEmail, String otp) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(fromEmail);
+        message.setTo(toEmail);
+        message.setSubject("Your OTP Code - Authify");
+
+        String body = String.format(
+                "Hello,\n\n" +
+                        "Your OTP code is: %s\n\n" +
+                        "Please use this code to complete your verification. It will expire in 24 hours.\n\n" +
+                        "If you did not request this, please ignore this email.\n\n" +
+                        "Thanks,\n" +
+                        "Authify Team",
+                otp
+        );
+
+        message.setText(body);
+        javaMailSender.send(message);
+    }
+
 }
