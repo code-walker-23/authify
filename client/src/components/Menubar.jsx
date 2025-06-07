@@ -1,10 +1,9 @@
-import React from "react";
 import { assets } from "../assets/assets";
 import { useNavigate } from "react-router-dom";
 
 const Menubar = () => {
   const navigate = useNavigate();
-  
+
   return (
     <nav className="navbar navbar-expand-lg bg-white px-4 py-3 shadow-sm">
       <div className="container-fluid d-flex align-items-center justify-content-between">
