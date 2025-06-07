@@ -9,11 +9,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ProfileRequest {
+
     @NotBlank(message = "Name should not be empty")
     private String name;
-    @Email(message = "Enter a valid email address")
+
     @NotNull(message = "Email should not be empty")
+    @Email(message = "Enter a valid email address")
+    @Pattern(
+            regexp = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$",
+            message = "Enter a valid email address"
+    )
     private String email;
-    @Size(min = 6 , message = "Password must be atleast 6 characters")
+
+    @Size(min = 6, message = "Password must be at least 6 characters")
     private String password;
 }
+
