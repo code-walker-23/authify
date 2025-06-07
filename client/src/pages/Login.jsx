@@ -1,11 +1,8 @@
-import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { assets } from "../assets/assets";
 import LoginForm from "../components/LoginForm";
 
 const Login = () => {
-  const [isCreateAccount, setCreateAccount] = useState(false);
-
   return (
     <div
       className="position-relative min-vh-100 d-flex justify-content-center align-items-center"
@@ -44,11 +41,7 @@ const Login = () => {
         </Link>
       </div>
 
-      {/* Form */}
-      <LoginForm
-        isCreateAccount={isCreateAccount}
-        setCreateAccount={setCreateAccount}
-      />
+      <LoginForm />
     </div>
   );
 };

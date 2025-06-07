@@ -1,7 +1,93 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { AppContext } from "../context/AppContext";
+import { toast } from "react-toastify";
 
-const LoginForm = ({ isCreateAccount, setCreateAccount }) => {
+const LoginForm = () => {
+  const [isCreateAccount, setCreateAccount] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  const navigate = useNavigate();
+
+  const { BACKEND_URL, setUserData, userData, getUserData } =
+    useContext(AppContext);
+
+  console.log("UserData After Auth", userData);
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    axios.defaults.withCredentials = true;
+    setLoading(true);
+
+    try {
+      let response;
+
+      if (isCreateAccount) {
+        // Register: send name, email, password
+        response = await axios.post(`${BACKEND_URL}/register`, {
+          name: name.trim(),
+          email: email.trim(),
+          password,
+        });
+
+        console.log(response);
+
+        if (response.status === 201) {
+          toast.success("Account created successfully!");
+          setUserData(response?.data);
+          navigate("/");
+        } else {
+          toast.error("Email is already Exist!");
+        }
+      } else {
+        // Login: only email and password
+        response = await axios.post(`${BACKEND_URL}/login`, {
+          email: email.trim(),
+          password,
+        });
+
+        console.log(response);
+
+        if (response?.status === 200) {
+          setLoggedIn(true);
+          getUserData();
+          console.log("UserData After Auth", userData);
+          navigate("/");
+          toast.success("Login successfully!");
+        }
+      }
+    } catch (error) {
+      const errData = error?.response?.data;
+
+      if (errData && typeof errData === "object") {
+        // If the object has a 'message' field, show only that (authentication error or generic error)
+        if ("message" in errData) {
+          toast.error(errData.message);
+        } else {
+          // Otherwise, assume it's a validation error object: show the first message only
+          const firstError = Object.values(errData).find(
+            (val) => typeof val === "string"
+          );
+          if (firstError) {
+            toast.error(firstError);
+          } else {
+            // Fallback generic message if no string found
+            toast.error("Validation error occurred");
+          }
+        }
+      } else {
+        // If errData is not an object, show generic fallback
+        const message = errData || "Something went wrong!";
+        toast.error(message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div
       className="card p-4 shadow rounded-4 bg-white"
@@ -21,7 +107,7 @@ const LoginForm = ({ isCreateAccount, setCreateAccount }) => {
           : "Welcome back! Please login to continue."}
       </p>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         {isCreateAccount && (
           <div className="mb-3">
             <label htmlFor="name" className="form-label fw-semibold">
@@ -30,9 +116,11 @@ const LoginForm = ({ isCreateAccount, setCreateAccount }) => {
             <input
               type="text"
               id="name"
+              value={name}
               className="form-control form-control-lg"
               placeholder="John Doe"
               required
+              onChange={(e) => setName(e.target.value)}
             />
           </div>
         )}
@@ -44,9 +132,12 @@ const LoginForm = ({ isCreateAccount, setCreateAccount }) => {
           <input
             type="email"
             id="email"
+            value={email}
             className="form-control form-control-lg"
             placeholder="you@example.com"
             required
+            onChange={(e) => setEmail(e.target.value)}
+            autoComplete="email"
           />
         </div>
 
@@ -57,9 +148,12 @@ const LoginForm = ({ isCreateAccount, setCreateAccount }) => {
           <input
             type="password"
             id="password"
+            value={password}
             className="form-control form-control-lg"
             placeholder="••••••••"
             required
+            onChange={(e) => setPassword(e.target.value)}
+            autoComplete="current-password"
           />
         </div>
 
@@ -74,6 +168,7 @@ const LoginForm = ({ isCreateAccount, setCreateAccount }) => {
         <button
           type="submit"
           className="btn btn-primary w-100 py-2 fw-semibold"
+          disabled={loading}
         >
           {isCreateAccount ? "Create Account" : "Login"}
         </button>
@@ -91,7 +186,7 @@ const LoginForm = ({ isCreateAccount, setCreateAccount }) => {
           className="btn btn-link p-0 fw-semibold"
           onClick={() => setCreateAccount((prev) => !prev)}
         >
-          {isCreateAccount ? "Login" : "Register"}
+          {loading ? "Loading..." : isCreateAccount ? "Login" : "Register"}
         </button>
       </div>
     </div>
