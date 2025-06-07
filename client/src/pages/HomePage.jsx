@@ -1,8 +1,11 @@
 import React from 'react'
+import Menubar from '../components/MenuBar'
 
 const HomePage = () => {
   return (
-    <div>HomePage</div>
+    <div>
+      <Menubar/>
+    </div>
   )
 }
 
