@@ -3,7 +3,10 @@ import { assets } from "../assets/assets";
 
 const Header = () => {
   return (
-    <div className="text-center d-flex flex-column align-items-center justify-content-center py-5 px-3">
+    <div
+      className="text-center d-flex flex-column align-items-center justify-content-center py-5 px-3"
+      style={{ minHeight: "80vh" }}
+    >
       <img
         src={assets.authify_header}
         alt="header"
