@@ -39,7 +39,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // JWT-based, stateless
                 .logout(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/login", "/register", "/logout", "/send-rest-otp", "/send-reset-password").permitAll() // Public endpoints
+                        .requestMatchers("/login", "/register", "/logout", "/send-reset-otp", "/reset-password").permitAll() // Public endpoints
                         .anyRequest().authenticated() // All other endpoints require authentication
                 )
                 .exceptionHandling(ex -> ex.authenticationEntryPoint(customAuthenticationEntryPoint)) // Custom 401 handler
