@@ -120,7 +120,7 @@ const EmailVerify = () => {
 
   useEffect(() => {
     isUserLoggedIn && userData && userData.isAccountVerified && navigate("/");
-  }, [isUserLoggedIn, userData, navigate]);
+  }, [isUserLoggedIn, userData,navigate]);
 
   return (
     <div

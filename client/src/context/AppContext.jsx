@@ -38,11 +38,7 @@ export const AppContextProvider = ({ children }) => {
         setUserData(null);
       }
     } catch (error) {
-      setIsUserLoggedIn(false);
-      setUserData(null);
-      const msg =
-        error?.response?.data?.message || "Failed to verify authentication.";
-      toast.error(msg);
+      console.error(error);
     }
   }, [getUserData]);
 
@@ -61,8 +57,6 @@ export const AppContextProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider value={contextValue}>
-      {children}
-    </AppContext.Provider>
+    <AppContext.Provider value={contextValue}>{children}</AppContext.Provider>
   );
 };

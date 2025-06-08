@@ -34,7 +34,7 @@ const LoginForm = () => {
           toast.success(
             "Account created successfully! Please verify your email."
           );
-          navigate("/email-verify");
+          setCreateAccount(false);
         } else {
           toast.error("Email already exist!");
         }
