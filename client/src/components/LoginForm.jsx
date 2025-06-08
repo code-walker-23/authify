@@ -10,7 +10,7 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const [setLoggedIn] = useState(false);
   const navigate = useNavigate();
 
   const { BACKEND_URL, setUserData, userData, getUserData } =

@@ -41,8 +41,22 @@ const Menubar = () => {
     navigate("/login");
   };
 
-  const handleVerifyEmail = () => {
-    navigate("/verify-email");
+  const handleVerifyEmail = async (email) => {
+    try {
+      axios.defaults.withCredentials = true;
+      const response = await axios.post(`${BACKEND_URL}/send-otp`, { email });
+
+      if (response.status === 200) {
+        toast.success("Verification code sent to your email.");
+        navigate("/email-verify");
+      } else {
+        toast.error(response?.statusText || "Failed to send verification code");
+      }
+    } catch (error) {
+      const message =
+        error?.response?.data?.message || "An error occurred while sending OTP";
+      toast.error(message);
+    }
   };
 
   return (
@@ -95,7 +109,7 @@ const Menubar = () => {
                   <div
                     className="dropdown-item py-1 px-2"
                     style={{ cursor: "pointer" }}
-                    onClick={handleVerifyEmail}
+                    onClick={() => handleVerifyEmail(userData?.email)}
                   >
                     Verify Email
                   </div>
