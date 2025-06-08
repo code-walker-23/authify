@@ -10,53 +10,45 @@ const LoginForm = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [setLoggedIn] = useState(false);
   const navigate = useNavigate();
 
-  const { BACKEND_URL, setUserData, userData, getUserData } =
+  const { BACKEND_URL, getUserData, setIsUserLoggedIn } =
     useContext(AppContext);
 
-  console.log("UserData After Auth", userData);
   const handleSubmit = async (e) => {
     e.preventDefault();
-    axios.defaults.withCredentials = true;
     setLoading(true);
+    axios.defaults.withCredentials = true;
 
     try {
       let response;
 
       if (isCreateAccount) {
-        // Register: send name, email, password
         response = await axios.post(`${BACKEND_URL}/register`, {
           name: name.trim(),
           email: email.trim(),
           password,
         });
 
-        console.log(response);
-
         if (response.status === 201) {
-          toast.success("Account created successfully!");
-          setUserData(response?.data);
-          navigate("/");
+          toast.success(
+            "Account created successfully! Please verify your email."
+          );
+          navigate("/email-verify");
         } else {
-          toast.error("Email is already Exist!");
+          toast.error("Email already exist!");
         }
       } else {
-        // Login: only email and password
         response = await axios.post(`${BACKEND_URL}/login`, {
           email: email.trim(),
           password,
         });
 
-        console.log(response);
-
         if (response?.status === 200) {
-          setLoggedIn(true);
-          getUserData();
-          console.log("UserData After Auth", userData);
+          setIsUserLoggedIn(true);
+          await getUserData();
+          toast.success("Login successful!");
           navigate("/");
-          toast.success("Login successfully!");
         }
       }
     } catch (error) {
@@ -91,11 +83,7 @@ const LoginForm = () => {
   return (
     <div
       className="card p-4 shadow rounded-4 bg-white"
-      style={{
-        maxWidth: "400px",
-        width: "100%",
-        border: "none",
-      }}
+      style={{ maxWidth: "400px", width: "100%", border: "none" }}
     >
       <h2 className="text-center fw-bold mb-2">
         {isCreateAccount ? "Register" : "Login"}
@@ -170,11 +158,14 @@ const LoginForm = () => {
           className="btn btn-primary w-100 py-2 fw-semibold"
           disabled={loading}
         >
-          {isCreateAccount ? "Create Account" : "Login"}
+          {loading
+            ? "Processing..."
+            : isCreateAccount
+            ? "Create Account"
+            : "Login"}
         </button>
       </form>
 
-      {/* Switch between login/register */}
       <div className="text-center mt-4">
         <span className="text-muted">
           {isCreateAccount
@@ -186,7 +177,7 @@ const LoginForm = () => {
           className="btn btn-link p-0 fw-semibold"
           onClick={() => setCreateAccount((prev) => !prev)}
         >
-          {loading ? "Loading..." : isCreateAccount ? "Login" : "Register"}
+          {isCreateAccount ? "Login" : "Register"}
         </button>
       </div>
     </div>

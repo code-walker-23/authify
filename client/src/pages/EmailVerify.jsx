@@ -12,6 +12,7 @@ const EmailVerify = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { BACKEND_URL, getUserData } = useContext(AppContext);
+  const { isUserLoggedIn, userData } = useContext(AppContext);
 
   useEffect(() => {
     inputRefs.current[0]?.focus();
@@ -103,7 +104,7 @@ const EmailVerify = () => {
 
       if (response.status === 200) {
         toast.success("Email verified successfully!");
-        getUserData();
+        await getUserData();
         navigate("/");
       } else {
         toast.error(response?.statusText || "Verification failed");
@@ -117,7 +118,9 @@ const EmailVerify = () => {
     }
   };
 
-  console.log(otp, typeof otp);
+  useEffect(() => {
+    isUserLoggedIn && userData && userData.isAccountVerified && navigate("/");
+  }, [isUserLoggedIn, userData, navigate]);
 
   return (
     <div

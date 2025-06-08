@@ -28,17 +28,17 @@ const Menubar = () => {
       axios.defaults.withCredentials = true;
       const response = await axios.post(`${BACKEND_URL}/logout`);
 
-      if (response?.status == 200) {
-        setIsUserLoggedIn(false);
-        setUserData(null);
-        navigate("/");
-        toast.success("Logout Successfully!");
+      if (response?.status === 200) {
+        toast.success("Logout successfully!");
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message);
+      const message = error?.response?.data?.message || "Logout failed!";
+      toast.error(message);
+    } finally {
+      setIsUserLoggedIn(false);
+      setUserData(null);
+      navigate("/login");
     }
-    setUserData(null);
-    navigate("/login");
   };
 
   const handleVerifyEmail = async (email) => {
