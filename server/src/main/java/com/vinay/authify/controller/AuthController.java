@@ -43,7 +43,13 @@ public class AuthController {
             authenticate(request.getEmail(),request.getPassword());
             final UserDetails userDetails = appUserDetailsService.loadUserByUsername(request.getEmail());
             final String jwtToken = jwtUtil.generateToken(userDetails);
-            ResponseCookie responseCookie = ResponseCookie.from("jwt",jwtToken).httpOnly(true).path("/").maxAge(Duration.ofDays(1)).sameSite("Strict").build();
+            ResponseCookie responseCookie = ResponseCookie.from("jwt", jwtToken)
+                    .httpOnly(true)
+                    .secure(true)
+                    .sameSite("None")
+                    .path("/")
+                    .maxAge(Duration.ofDays(1))
+                    .build();
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE,responseCookie.toString()).body(new AuthResponse(request.getEmail(), jwtToken));
         }catch (BadCredentialsException ex){
             Map<String,Object> error = new HashMap<>();
